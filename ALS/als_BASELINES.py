@@ -331,7 +331,7 @@ def main():
   final_stars.show(100)
   # sys.exit()
   sqlContext = SQLContext(spark.sparkContext)
-  sqlContext.udf.register("get_final_ratings_CONDITIONAL", get_final_ratings_CONDITIONAL, FloatType())
+  # sqlContext.udf.register("get_final_ratings_CONDITIONAL", get_final_ratings_CONDITIONAL, FloatType())
   from pyspark.sql.functions import lit
   # final_stars_CONDITIONAL = final_stars.withColumn('final-stars-CONDITIONAL', lit(str(get_final_ratings_CONDITIONAL(final_stars['prediction'],
   #                                                                                                           final_stars['user-mean'],
