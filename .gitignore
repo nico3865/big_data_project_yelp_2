@@ -1,0 +1,13 @@
+.idea/inspectionProfiles/Project_Default.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
+big_data_project_yelp.iml
+.DS_Store
+derby.log
+metastore_db/
+venv/pip-selfcheck.json
+venv/pyvenv.cfg
+venv1/pip-selfcheck.json
+venv1/pyvenv.cfg

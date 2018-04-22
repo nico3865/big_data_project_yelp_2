@@ -1,0 +1,6 @@
+pyspark
+py4j
+numpy
+nose
+tornado
+matplotlib
