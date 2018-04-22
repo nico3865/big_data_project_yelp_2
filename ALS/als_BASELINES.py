@@ -80,33 +80,33 @@ def get_final_ratings(i, user_mean, item_mean, global_average_rating):
 
 from pyspark.sql.functions import when
 # @udf("float")
-def get_final_ratings_CONDITIONAL(
-        i,
-        user_mean,
-        item_mean,
-        global_average_rating,
-        num_review_counts_business,
-        num_review_counts_user):
-
-    print("do we even get here?")
-    print("num_review_counts_business ==> ", num_review_counts_business)
-
-    # MIN_num_review_counts_business = 0
-    # MIN_num_review_counts_user = 10
-    when ((num_review_counts_business > MIN_num_review_counts_business) & (num_review_counts_user > MIN_num_review_counts_user), i+user_mean+item_mean-global_average_rating)\
-        .otherwise(when ((num_review_counts_business > MIN_num_review_counts_business) & (num_review_counts_user <= MIN_num_review_counts_user), item_mean)\
-            .otherwise(when ((num_review_counts_business <= MIN_num_review_counts_business) & (num_review_counts_user > MIN_num_review_counts_user), user_mean)
-                .otherwise(when ((num_review_counts_business <= MIN_num_review_counts_business) & (num_review_counts_user <= MIN_num_review_counts_user), global_average_rating))
-                       )
-                   )
-
-    #return final_ratings
+# def get_final_ratings_CONDITIONAL(
+#         i,
+#         user_mean,
+#         item_mean,
+#         global_average_rating,
+#         num_review_counts_business,
+#         num_review_counts_user):
+#
+#     print("do we even get here?")
+#     print("num_review_counts_business ==> ", num_review_counts_business)
+#
+#     # MIN_num_review_counts_business = 0
+#     # MIN_num_review_counts_user = 10
+#     when ((num_review_counts_business > MIN_num_review_counts_business) & (num_review_counts_user > MIN_num_review_counts_user), i+user_mean+item_mean-global_average_rating)\
+#         .otherwise(when ((num_review_counts_business > MIN_num_review_counts_business) & (num_review_counts_user <= MIN_num_review_counts_user), item_mean)\
+#             .otherwise(when ((num_review_counts_business <= MIN_num_review_counts_business) & (num_review_counts_user > MIN_num_review_counts_user), user_mean)
+#                 .otherwise(when ((num_review_counts_business <= MIN_num_review_counts_business) & (num_review_counts_user <= MIN_num_review_counts_user), global_average_rating))
+#                        )
+#                    )
+#
+#     #return final_ratings
 
 
 def main():
   spark = SparkSession.Builder().getOrCreate()
   # seed = int(sys.argv[SEED])
-  seed = 123#int(sys.argv[1])
+  seed = 3#int(sys.argv[1])
   # datapath = os.path.dirname(os.path.dirname(os.path.abspath(sys.argv[0])))
   # datapath = "/Users/nicolasg-chausseau/big_data_project_yelp"
 
@@ -114,7 +114,7 @@ def main():
   filename = 'review_CONCAT.json'
   # filename = '/Users/nicolasg-chausseau/Downloads/yelp_dataset/review_MTL_ONLY.json'
   # filename = '/Users/nicolasg-chausseau/big_data_project_yelp/data/review_truncated_RAW.json'
-  num_reviews_evaluated = 20000 #200000
+  num_reviews_evaluated = 200000 #200000
   rdd = spark.read.json(filename).limit(num_reviews_evaluated).rdd # datapath+'/data/review_trunca®ted_RAW.json'
   df = spark.createDataFrame(rdd)
   (training, test) = df.randomSplit([0.8, 0.2], seed)
@@ -409,6 +409,20 @@ def main():
   # rmse_for_POWER_USERS_ONLY ==>  1.1346288199500174
   # rmse_for_POPULAR_BUSINESSES_ONLY_and_POWER_USERS_ONLY ==>  0.2702913721508148
   # rmse_CONDITIONAL ==>  1.1680885487431756
+
+  # ^^^^^^^^^^^^^^^^^^ AGAIN FINAL SUMMARY: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  # THIS IS THE RMSE FOR THIS RUN ==>  1.4331488090028257
+  # these are the params for this run:
+  # num_reviews_evaluated used ==>  20000
+  # num_latent_factors_ie_rank used ==>  70
+  # MIN_num_review_counts_business used ==>  0
+  # MIN_num_review_counts_user used ==>  10
+  # RMSE from business mean ==>  1.4078738401950444
+  # RMSE from user mean ==>  1.3232566937501344
+  # rmse_for_POPULAR_BUSINESSES_ONLY ==>  1.5294873057491487
+  # rmse_for_POWER_USERS_ONLY ==>  1.2668657573344173
+  # rmse_for_POPULAR_BUSINESSES_ONLY_and_POWER_USERS_ONLY ==>  1.3730744697940838
+  # rmse_CONDITIONAL ==>  1.3900540075546834
 
 
 
